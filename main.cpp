@@ -2,7 +2,7 @@
  * A simple prototype for a game I hope to finish
  * Author: Austin Herman
  * Started: 12/15/15
- * Last Update: 12/25/15
+ * Last Update: 2/15/16
  * Progress: Building
 */
 
