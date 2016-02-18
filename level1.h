@@ -19,4 +19,5 @@ protected:
 	sf::IntRect screenDimension;
 	sf::Texture map;
 	sf::Sprite smap;
+	bool menuIsOpen;
 };
