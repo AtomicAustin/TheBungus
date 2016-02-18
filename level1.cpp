@@ -12,7 +12,7 @@ level1::~level1()
 {}
 void level1::level1Display(sf::RenderWindow &gameWindow, Bits bits)
 {
-	gameWindow.setSize(map.getSize());
+	//gameWindow.setSize(map.getSize());
 
 	Player* player = new Player("png/player/herofull33x24.png", sf::Vector2i(33,24), gameWindow.getSize(), bits.position);
 
@@ -54,6 +54,16 @@ void level1::level1Display(sf::RenderWindow &gameWindow, Bits bits)
 				gameWindow.close();
 			if(event.type == sf::Event::KeyReleased)
 				player->keyReleased(event);
+			if(event.type == sf::Event::KeyPressed)
+			{
+				if(event.key.code == sf::Keyboard::Escape)
+				{
+					sf::Font pFont;
+					pFont.loadFromFile("00TT.ttf");
+					GUIstyle(&pFont, 5, sf::Color::Blue, sf::Color::Green, sf::Color::Black, sf::Color::Yellow, sf::Color::Black, sf::Color::White);
+
+				}
+			}
 		}
 
 		enemy->move(player);
