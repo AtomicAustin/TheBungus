@@ -5,6 +5,7 @@
 #include "enemy.h"
 #include "object.h"
 #include "bits.cpp"
+#include "GUIsystem.h"
 
 class level1
 {
