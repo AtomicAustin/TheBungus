@@ -1,150 +1,77 @@
 #include "GUIsystem.h"
 
-GUIstyle::GUIstyle()
-{}
-GUIstyle::GUIstyle(sf::Font* font, float borderSize, sf::Color bodyColor, sf::Color bodyHighlightColor, sf::Color borderColor, sf::Color borderHighlightColor, sf::Color textColor, sf::Color textHighlightColor)
+GUI::GUI(){};
+GUI::GUI(sf::Vector2f dimensions, sf::Vector2f position, sf::Color BackgroundColor, sf::Color borderColor)
 {
-	this->bodyColor = bodyColor;
-	this->bodyHighlightColor = bodyHighlightColor;
-	this->borderColor = borderColor;
-	this->borderHighlightColor = borderHighlightColor;
-	this->textColor = textColor;
-	this->textHighlightColor = textHighlightColor;
-	this->font = font;
-	this->borderSize = borderSize;
-}
-GUIentry::GUIentry()
-{}
-GUIentry::GUIentry(const std::string& message, sf::RectangleShape shape, sf::Text text)
-{
-	this->message = message;
-	this->shape = shape;
-	this->text = text;
-}
-GUI::GUI(sf::Vector2f dimensions, int padding, bool horizontal, GUIstyle& style, std::vector<std::pair<std::string, std::string>> entries)
-{
-	visible = false;
-	this->horizontal = horizontal;
-	this->style = style;
-	this->dimensions = dimensions;
-	this->padding = padding;
-	
-	sf::RectangleShape shape;
-	shape.setSize(dimensions);
-	shape.setFillColor(style.bodyColor);
-	shape.setOutlineThickness(-style.borderSize);
-	shape.setOutlineColor(style.borderColor);
+	background.setSize(dimensions);
+	background.setFillColor(backgroundColor);
+	background.setOutlineThickness(5);
+	background.setOutlineColor(borderColor);
+	background.setPosition(position);
 
-	for(auto entry : entries)
+	buttonReference = 0;
+}
+int GUI::addButton(sf::Vector2f dimensions, sf::Vector2f position, std::string& text, sf::Color buttonColor, sf::Color borderColor, sf::Color textColor, std::string& fontName)
+{
+	buttons.push_back(new Button(dimensions, position, text, buttonColor, borderColor, textColor, fontName));
+	if(buttonReference !=0) buttonReference++;
+
+	return buttonReference;
+}
+int GUI::update()
+{
+	sf::Vector2i mousePosition = sf::Mouse::getPosition();
+	for(int i = 0; i <= buttonReference; i++)
 	{
-		sf::Text text;
-		text.setString(entry.first);
-		text.setFont(*style.font);
-		text.setColor(style.textColor);
-		text.setCharacterSize(dimensions.y - style.borderSize - padding);
+		if(buttons[i]->buttonBackground.getGlobalBounds().contains(mousePosition.x, mousePosition.y))
+		{
+			buttons[i]->hovering();
 
-		this->entries.push_back(GUIentry(entry.second, shape, text));
+			if(sf::Mouse::isButtonPressed(sf::Mouse::Left))
+			{
+				return i;
+			}
+		}
 	}
-}
-sf::Vector2f GUI::getSize()
-{
-	return sf::Vector2f(this->dimensions.x, this->dimensions.y * this->entries.size());
-}
-int GUI::getEntry(const sf::Vector2f mousePos)
-{
-	if(entries.size() == 0) return -1;
-	if(!this->visible) return -1;
-
-	for(int i = 0; i < this->entries.size(); ++i)
-	{
-
-		sf::Vector2f point = mousePos;
-		point += this->entries[i].shape.getOrigin();
-		point -= this->entries[i].shape.getPosition();
-
-		if(point.x < 0 || point.x > this->entries[i].shape.getScale().x*this->dimensions.x) continue;
-		if(point.y < 0 || point.y > this->entries[i].shape.getScale().y*this->dimensions.y) continue;
-		return i;
-	}
-
 	return -1;
 }
-void GUI::setEntryText(int entry, std::string text)
+void GUI::show()
 {
-	if(entry >= entries.size() || entry < 0) return;
-
-	entries[entry].text.setString(text);
+	visible = true;
 }
-void GUI::setDimensions(sf::Vector2f dimensions)
+void GUI::hide()
 {
-	this->dimensions = dimensions;
-
-	for(auto& entry : entries)
-	{
-		entry.shape.setSize(dimensions);
-		entry.text.setCharacterSize(dimensions.y-style.borderSize-padding);
-	}
+	visible = false;
 }
 void GUI::draw(sf::RenderTarget& target, sf::RenderStates states) const
 {
 	if(!visible) return;
 
-	for(auto entry : this->entries)
+	for(int i = 0; i <= buttonReference; i++)
 	{
-		target.draw(entry.shape);
-		target.draw(entry.text);
+		target.draw(buttons[i]->buttonBackground);
+		target.draw(buttons[i]->buttonText);
 	}
-}
-void GUI::show()
-{
-	sf::Vector2f offset(0.0f, 0.0f);
+	target.draw(background);
 
-	this->visible = true;
+}
+Button::Button(sf::Vector2f dimensions, sf::Vector2f position, std::string& text, sf::Color buttonColor, sf::Color borderColor, sf::Color textColor, std::string& font)
+{
+	buttonBackground.setSize(dimensions);
+	buttonBackground.setPosition(position);
+	buttonBackground.setFillColor(buttonColor);
+	buttonBackground.setOutlineColor(borderColor);
+	buttonBackground.setOutlineThickness(-2);
 
-	for(auto& entry : this->entries)
-	{
-		sf::Vector2f origin = this->getOrigin();
-		origin -= offset;
-		entry.shape.setOrigin(origin);
-		entry.text.setOrigin(origin);
-		entry.shape.setPosition(this->getPosition());
-		entry.text.setPosition(this->getPosition());
-
-		if(this->horizontal) offset.x += this->dimensions.x;
-		else offset.y += this->dimensions.y;
-	}
-
-	return;
+	buttonText.setString(text);
+	buttonText.setPosition(position.x + 3, position.y + 3);
+	buttonText.setColor(textColor);
+	textFont->loadFromFile(font);
+	buttonText.setFont(*textFont);
 }
-void GUI::hide()
+void Button::hovering()
 {
-	this->visible = false;
-}
-void GUI::highlight(const int entry)
-{
-	for(int i = 0; i < entries.size(); ++i)
-	{
-		if(i == entry) 
-		{
-			entries[i].shape.setFillColor(style.bodyHighlightColor);
-			entries[i].shape.setOutlineColor(style.borderHighlightColor);
-			entries[i].text.setColor(style.textHighlightColor);
-		}
-		else
-		{
-			entries[i].shape.setFillColor(style.bodyColor);
-			entries[i].shape.setOutlineColor(style.borderColor);
-			entries[i].text.setColor(style.textColor);
-		}
-	}
-}
-std::string GUI::activate(const int entry)
-{
-	if(entry == -1) return "null";
-	return entries[entry].message;
-}
-std::string GUI::activate(sf::Vector2f mousePos)
-{
-	int entry = this->getEntry(mousePos);
-	return this->activate(entry);
+	buttonBackground.setFillColor(sf::Color::Black);
+	buttonBackground.setOutlineColor(sf::Color::Black);
+	buttonText.setColor(sf::Color::Black);
 }
