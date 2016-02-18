@@ -2,56 +2,78 @@
 #include <iostream>
 #include "SFML\Graphics.hpp"
 
-class GUIstyle
-{
-public:
-	GUIstyle();
-	GUIstyle(sf::Font* font, float borderSize, 	sf::Color bodyColor, sf::Color bodyHighlightColor, sf::Color borderColor, sf::Color borderHighlightColor, sf::Color textColor, sf::Color textHighlightColor);
-
-	sf::Color bodyColor;
-	sf::Color bodyHighlightColor;
-	sf::Color borderColor;
-	sf::Color borderHighlightColor;
-	sf::Color textColor;
-	sf::Color textHighlightColor;
-	sf::Font* font;
-
-	float borderSize;
-};
-
-class GUIentry
-{
-public:
-	GUIentry();
-	GUIentry(const std::string& message, sf::RectangleShape shape, sf::Text text);
-
-	sf::RectangleShape shape;
-	std::string message;
-	sf::Text text;
-};
-
+class Button; 
 class GUI : public sf::Transformable, public sf::Drawable
 {
 public:
-	GUI(sf::Vector2f dimensions, int padding, bool horizontal, GUIstyle& style, std::vector<std::pair<std::string, std::string>> entries);
-	sf::Vector2f getSize();
-	int getEntry(const sf::Vector2f mousePos);
-	void setEntryText(int entry, std::string text);
-	void setDimensions(sf::Vector2f dimensions);
+	GUI();
+	//dimensions, position, background color, border color
+	GUI(sf::Vector2f dimensions, sf::Vector2f position, sf::Color BackgroundColor, sf::Color borderColor);
+	/*returns a number as which refers to the button. Used to handle choice logic
+	dimensions, position, text, button color, border color textcolor, font name ".txt"
+	*/
+	int addButton(sf::Vector2f dimensions, sf::Vector2f position, std::string& text, sf::Color buttonColor, sf::Color borderColor, sf::Color textColor, std::string& fontName);
+	int update();
 	void show();
 	void hide();
-	void highlight(const int entry);
 	virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
 
-	std::vector<GUIentry> entries;
 	bool visible;
-	std::string activate(const int entry);
-	std::string activate(const sf::Vector2f mousePos);
-
 private:
-
-	bool horizontal;
-	GUIstyle style;
 	sf::Vector2f dimensions;
-	int padding;
+	sf::Color backgroundColor;
+	sf::Color borderColor;
+	float borderSize;
+	sf::RectangleShape background;
+	std::vector<Button*> buttons;
+	int buttonReference;
 };
+
+class Button
+{
+public:
+	Button();
+	Button(sf::Vector2f dimensions, sf::Vector2f position, std::string& text, sf::Color buttonColor, sf::Color borderColor, sf::Color textColor, std::string& font);
+	void hovering();
+	void notHovering();
+	friend GUI;
+protected:
+	sf::RectangleShape buttonBackground;
+	sf::Text buttonText;
+	sf::Color textColor;
+	sf::Font* textFont;
+};
+
+/*class textGUI: public GUI
+{
+public:
+	textGUI(bool active);
+	void keyScroll();
+	void setText(std::string* activeMessage);
+	void storeText(std::string* storedMessage);
+private:
+	std::vector<std::string*> messages;
+};
+class InventoryGUI: public GUI
+{
+public:
+	InventoryGUI(bool inventory, bool active);
+	void updateInventory(bool inventory);
+	int hovered(sf::Vector2f mousePosition);
+	void showTooltip(int item);
+	sf::Vector2f getMousePosition();
+private:
+	std::vector<sf::Vector2f> itemPositions;
+	std::vector<int> items;
+	
+};
+class CraftGUI: public GUI
+{
+}
+class TradeGUI: public GUI
+{
+}
+class TooltipGUI: public GUI
+{
+}
+*/
