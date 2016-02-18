@@ -5,7 +5,7 @@ level1::level1()
 	if(!map.loadFromFile("png/level1/level1.png"))
 		std::cout << "Could not load file" << std::endl;
 	actionCnt = 0;
-
+	menuIsOpen = false;
 	smap.setTexture(map);
 }
 level1::~level1()
@@ -28,6 +28,18 @@ void level1::level1Display(sf::RenderWindow &gameWindow, Bits bits)
 	sf::Clock* eClock = new sf::Clock;
 	
 	view.reset(sf::FloatRect(0,0,300,200));
+
+	GUI pauseMenu(sf::Vector2f(200, 500), sf::Vector2f(450, 100), sf::Color (0x66, 0xb3, 0xff), sf::Color (0x00, 0x00, 0x33));
+	std::string resume = "Resume";
+	std::string options = "Options";
+	std::string quit = "Quit";
+	std::string fontName = "00TT.ttf";
+	int pause[] = 
+	{
+		pauseMenu.addButton(sf::Vector2f(160, 40), sf::Vector2f(470, 130), resume, sf::Color (0x00, 0x66, 0xff), sf::Color (0x00, 0x1f, 0x4d), sf::Color (0xcc, 0xe0, 0xff), fontName),
+		pauseMenu.addButton(sf::Vector2f(160, 40), sf::Vector2f(470, 200), options, sf::Color (0x00, 0x66, 0xff), sf::Color (0x00, 0x1f, 0x4d), sf::Color (0xcc, 0xe0, 0xff), fontName),
+		pauseMenu.addButton(sf::Vector2f(160, 40), sf::Vector2f(470, 270), quit, sf::Color (0x00, 0x66, 0xff), sf::Color (0x00, 0x1f, 0x4d), sf::Color (0xcc, 0xe0, 0xff), fontName),
+	};
 	
 	gameWindow.setFramerateLimit(30);
 
@@ -58,10 +70,8 @@ void level1::level1Display(sf::RenderWindow &gameWindow, Bits bits)
 			{
 				if(event.key.code == sf::Keyboard::Escape)
 				{
-					sf::Font pFont;
-					pFont.loadFromFile("00TT.ttf");
-					GUIstyle(&pFont, 5, sf::Color::Blue, sf::Color::Green, sf::Color::Black, sf::Color::Yellow, sf::Color::Black, sf::Color::White);
-
+					if(!pauseMenu.visible) pauseMenu.show();
+					else pauseMenu.hide();
 				}
 			}
 		}
@@ -88,6 +98,8 @@ void level1::level1Display(sf::RenderWindow &gameWindow, Bits bits)
 			view.move(0,1);
 		if(player->getPosition().y < view.getCenter().y-50)
 			view.move(0,-1);
+
+		if(pauseMenu.visible) pauseMenu.update();
 
 		gameWindow.setView(view);
         gameWindow.clear();
