@@ -33,7 +33,7 @@ class Button
 {
 public:
 	Button();
-	Button(sf::Vector2f dimensions, sf::Vector2f position, const std::string text, sf::Color buttonColor, sf::Color borderColor, sf::Color textColor, sf::Font font);
+	Button(sf::Vector2f dimensions, sf::Vector2f position, const std::string& text, sf::Color buttonColor, sf::Color borderColor, sf::Color textColor, sf::Font font);
 	void hovering();
 	void notHovering();
 	friend GUI;
