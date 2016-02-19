@@ -14,9 +14,9 @@
 
 int main()
 {
-	const int WIDTH = GetSystemMetrics(SM_CXSCREEN);
-	const int HEIGHT = GetSystemMetrics(SM_CYSCREEN) - 75;
-	sf::RenderWindow window(sf::VideoMode(WIDTH, HEIGHT), "The Game", sf::Style::Fullscreen);
+	const int WIDTH = GetSystemMetrics(SM_CXSCREEN) - 100;
+	const int HEIGHT = GetSystemMetrics(SM_CYSCREEN) - 100;
+	sf::RenderWindow window(sf::VideoMode(768, 768), "The Game");
 	window.setPosition(sf::Vector2i(0,0));
 
 	sf::IntRect menu1(0,0,768,768);
@@ -30,7 +30,8 @@ int main()
 	sTexture.loadFromFile("png/menu/splashscreen768x768.png");
 	sSprite.setTexture(sTexture);
 	sSprite.setTextureRect(menu1);
-	sSprite.setPosition((WIDTH/2 - 768/2), 0);
+	sSprite.setPosition(0,0);
+	//sSprite.setPosition((WIDTH/2 - 768/2), 0);
 
 	int choice = 0;
 
