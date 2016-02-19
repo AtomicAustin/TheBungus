@@ -57,24 +57,24 @@ void GUI::draw(sf::RenderTarget& target, sf::RenderStates states) const
 
 	states.transform *= getTransform();
 	
-	for(Button iterate : buttons)
+	/*for(Button iterate : buttons)
 	{
 		target.draw(iterate.buttonBackground);
 		target.draw(iterate.buttonText);
-	}
+	}*/
 
-	/*for(int i = 0; i < buttonReference-1; i++)
+	for(int i = 0; i < buttonReference-1; i++)
 	{
 		std::cout << "drawing button" << i << std::endl;
-		target.draw(buttons[i]->buttonBackground);
-		target.draw(buttons[i]->buttonText);
+		target.draw(buttons[i].buttonBackground);
+		target.draw(buttons[i].buttonText);
 	}
-	*/
+
 	std::cout << "drawing background" << std::endl;
 	target.draw(background);
 
 }
-Button::Button(sf::Vector2f dimensions, sf::Vector2f position, const std::string text, sf::Color buttonColor, sf::Color borderColor, sf::Color textColor, sf::Font font)
+Button::Button(sf::Vector2f dimensions, sf::Vector2f position, const std::string& text, sf::Color buttonColor, sf::Color borderColor, sf::Color textColor, sf::Font font)
 {
 	buttonBackground.setSize(dimensions);
 	buttonBackground.setPosition(position);
