@@ -8,26 +8,28 @@ GUI::GUI(sf::Vector2f dimensions, sf::Vector2f position, sf::Color BackgroundCol
 	background.setOutlineThickness(5);
 	background.setOutlineColor(borderColor);
 	background.setPosition(position);
-
+	visible = false;
 	buttonReference = 0;
 }
-int GUI::addButton(sf::Vector2f dimensions, sf::Vector2f position, std::string& text, sf::Color buttonColor, sf::Color borderColor, sf::Color textColor, std::string& fontName)
+int GUI::addButton(sf::Vector2f dimensions, sf::Vector2f position, const std::string& text, sf::Color buttonColor, sf::Color borderColor, sf::Color textColor, sf::Font font)
 {
-	buttons.push_back(new Button(dimensions, position, text, buttonColor, borderColor, textColor, fontName));
-	if(buttonReference !=0) buttonReference++;
-
+	buttons.push_back(Button(dimensions, position, text, buttonColor, borderColor, textColor, font)); 
+	buttonReference++;
+	std::cout << "button #" << buttonReference << " made." << std::endl;
 	return buttonReference;
 }
 int GUI::update()
 {
-	if(!visible) return -1;
+	//or buttons.empty
+	if(visible == false || buttons.empty()) 
+		return -1;
 
 	sf::Vector2i mousePosition = sf::Mouse::getPosition();
-	for(int i = 0; i <= buttonReference; i++)
+	for(int i = 0; i < buttonReference-1; i++)
 	{
-		if(buttons[i]->buttonBackground.getGlobalBounds().contains(mousePosition.x, mousePosition.y))
+		if(buttons[i].buttonBackground.getGlobalBounds().contains(mousePosition.x, mousePosition.y))
 		{
-			buttons[i]->hovering();
+			buttons[i].hovering();
 
 			if(sf::Mouse::isButtonPressed(sf::Mouse::Left))
 			{
@@ -35,7 +37,7 @@ int GUI::update()
 			}
 		}
 		else
-			buttons[i]->notHovering();
+			buttons[i].notHovering();
 	}
 	return -1;
 }
@@ -49,17 +51,30 @@ void GUI::hide()
 }
 void GUI::draw(sf::RenderTarget& target, sf::RenderStates states) const
 {
-	if(!visible) return;
 
-	for(int i = 0; i <= buttonReference; i++)
+	if(visible == false) 
+		return;
+
+	states.transform *= getTransform();
+	
+	for(Button iterate : buttons)
 	{
+		target.draw(iterate.buttonBackground);
+		target.draw(iterate.buttonText);
+	}
+
+	/*for(int i = 0; i < buttonReference-1; i++)
+	{
+		std::cout << "drawing button" << i << std::endl;
 		target.draw(buttons[i]->buttonBackground);
 		target.draw(buttons[i]->buttonText);
 	}
+	*/
+	std::cout << "drawing background" << std::endl;
 	target.draw(background);
 
 }
-Button::Button(sf::Vector2f dimensions, sf::Vector2f position, std::string& text, sf::Color buttonColor, sf::Color borderColor, sf::Color textColor, std::string& font)
+Button::Button(sf::Vector2f dimensions, sf::Vector2f position, const std::string text, sf::Color buttonColor, sf::Color borderColor, sf::Color textColor, sf::Font font)
 {
 	buttonBackground.setSize(dimensions);
 	buttonBackground.setPosition(position);
@@ -70,8 +85,7 @@ Button::Button(sf::Vector2f dimensions, sf::Vector2f position, std::string& text
 	buttonText.setString(text);
 	buttonText.setPosition(position.x + 3, position.y + 3);
 	buttonText.setColor(textColor);
-	textFont->loadFromFile(font);
-	buttonText.setFont(*textFont);
+	buttonText.setFont(font);
 }
 void Button::hovering()
 {
