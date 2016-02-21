@@ -100,17 +100,6 @@ void level1::level1Display(sf::RenderWindow &gameWindow, Bits bits)
 
 						gameWindow.display();
 					}
-
-					/*if(!pauseMenu.visible) 
-					{
-						std::cout << "Showing pause menu" << std::endl;
-						pauseMenu.show();
-					}
-					else 
-					{
-						std::cout << "hiding pause menu" << std::endl;
-						pauseMenu.hide();
-					}*/
 				}
 			}
 		}
