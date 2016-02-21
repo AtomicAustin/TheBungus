@@ -9,23 +9,18 @@ public:
 	GUI();
 	//dimensions, position, background color, border color
 	GUI(sf::Vector2f dimensions, sf::Vector2f position, sf::Color BackgroundColor, sf::Color borderColor);
-	/*returns a number as which refers to the button. Used to handle choice logic
-	dimensions, position, text, button color, border color textcolor, font name ".txt"
-	*/
-	int addButton(sf::Vector2f dimensions, sf::Vector2f position, const std::string& text, sf::Color buttonColor, sf::Color borderColor, sf::Color textColor, sf::Font font);
-	int update();
+	//dimensions, position, text, button color, border color textcolor, font name ".txt"
+	int addButton(sf::Vector2f dimensions, sf::Vector2f position, const std::string& text, sf::Color buttonColor, sf::Color borderColor, sf::Color textColor, sf::Font* font);
+	int update(const sf::Vector2f viewPosition, sf::Vector2f &mousePosition);
 	void show();
 	void hide();
+	sf::Vector2f getPosition();
 	virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
 
 	bool visible;
-private:
-	sf::Vector2f dimensions;
-	sf::Color backgroundColor;
-	sf::Color borderColor;
-
-	sf::RectangleShape background;
 	std::vector<Button> buttons;
+private:
+	sf::RectangleShape background;
 	int buttonReference;
 };
 
@@ -33,15 +28,13 @@ class Button
 {
 public:
 	Button();
-	Button(sf::Vector2f dimensions, sf::Vector2f position, const std::string& text, sf::Color buttonColor, sf::Color borderColor, sf::Color textColor, sf::Font font);
+	Button(sf::Vector2f dimensions, sf::Vector2f position, const std::string& text, sf::Color buttonColor, sf::Color borderColor, sf::Color textColor, sf::Font* font);
+	bool checkHovering(sf::Vector2f);
 	void hovering();
 	void notHovering();
-	friend GUI;
-protected:
+	void setPosition(sf::Vector2f);
 	sf::RectangleShape buttonBackground;
 	sf::Text buttonText;
-	sf::Color textColor;
-	sf::Font* textFont;
 };
 
 /*class textGUI: public GUI
