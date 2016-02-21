@@ -5,7 +5,6 @@ level1::level1()
 	if(!map.loadFromFile("png/level1/level1.png"))
 		std::cout << "Could not load file" << std::endl;
 	actionCnt = 0;
-	menuIsOpen = false;
 	smap.setTexture(map);
 }
 level1::~level1()
@@ -66,6 +65,34 @@ void level1::level1Display(sf::RenderWindow &gameWindow, Bits bits)
 		if(sf::Keyboard::isKeyPressed(sf::Keyboard::Q))
 			gameWindow.close();
 
+		if(sf::Keyboard::isKeyPressed(sf::Keyboard::Escape))
+		{
+			pClock->restart();
+			pauseMenu.show();
+			while(pauseMenu.visible)
+			{
+				guiPosition = sf::Vector2f(view.getCenter().x - 25, view.getCenter().y-25);
+				sf::Vector2f mousePosition = gameWindow.mapPixelToCoords(sf::Mouse::getPosition(gameWindow), view);
+				switch(pauseMenu.update(view.getCenter(), mousePosition))
+				{
+					case 1: pauseMenu.hide(); break;
+					case 3: gameWindow.close(); break;
+				}
+
+				if(pClock->getElapsedTime().asSeconds() > .1f && sf::Keyboard::isKeyPressed(sf::Keyboard::Escape))
+					pauseMenu.hide();
+
+				gameWindow.clear();
+				gameWindow.draw(smap);
+				gameWindow.draw(*player);
+				gameWindow.draw(*enemy);
+				gameWindow.draw(*tree);
+				gameWindow.draw(pauseMenu);
+
+				gameWindow.display();	
+			}
+		}
+
 		enemy->path(player, eClock);
 
 		sf::Event event;
@@ -76,32 +103,6 @@ void level1::level1Display(sf::RenderWindow &gameWindow, Bits bits)
 				gameWindow.close();
 			if(event.type == sf::Event::KeyReleased)
 				player->keyReleased(event);
-			if(event.type == sf::Event::KeyPressed)
-			{
-				if(event.key.code == sf::Keyboard::Escape)
-				{
-					pauseMenu.show();
-					while(pauseMenu.visible)
-					{
-						guiPosition = sf::Vector2f(view.getCenter().x - 25, view.getCenter().y-25);
-						sf::Vector2f mousePosition = gameWindow.mapPixelToCoords(sf::Mouse::getPosition(gameWindow), view);
-						switch(pauseMenu.update(view.getCenter(), mousePosition))
-						{
-							case 1: pauseMenu.hide(); break;
-							case 3: gameWindow.close(); break;
-						}
-
-						gameWindow.clear();
-						gameWindow.draw(smap);
-						gameWindow.draw(*player);
-						gameWindow.draw(*enemy);
-						gameWindow.draw(*tree);
-						gameWindow.draw(pauseMenu);
-
-						gameWindow.display();
-					}
-				}
-			}
 		}
 
 		enemy->move(player);
@@ -129,7 +130,7 @@ void level1::level1Display(sf::RenderWindow &gameWindow, Bits bits)
 
 
 		gameWindow.setView(view);
-        gameWindow.clear();
+		gameWindow.clear();
 		gameWindow.draw(smap);
 		gameWindow.draw(*player);
 		gameWindow.draw(*enemy);
