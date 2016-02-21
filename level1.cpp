@@ -28,23 +28,25 @@ void level1::level1Display(sf::RenderWindow &gameWindow, Bits bits)
 	sf::Clock* eClock = new sf::Clock;
 	
 	view.reset(sf::FloatRect(0,0,300,200));
+	
+	sf::Vector2f guiPosition(view.getCenter().x - 50, view.getCenter().y-75);
 
-	GUI pauseMenu(sf::Vector2f(200, 500), sf::Vector2f(450, 100), sf::Color (0x66, 0xb3, 0xff), sf::Color (0x00, 0x00, 0x33));
+	GUI pauseMenu(sf::Vector2f(100, 150), guiPosition, sf::Color (0x66, 0xb3, 0xff), sf::Color (0x00, 0x00, 0x33));
 	std::string resume = "Resume";
 	std::string options = "Options";
 	std::string quit = "Quit";
 	std::string fontName = "00TT.ttf";
 
-	sf::Font font;
-	if(!font.loadFromFile(fontName))
+	sf::Font* font = new sf::Font;
+	if(!font->loadFromFile(fontName))
 		std::cout << "couldn't load font" << std::endl;
 
 	//add button takes a font not a string
 	int pause[] = 
 	{
-		pauseMenu.addButton(sf::Vector2f(160, 40), sf::Vector2f(470, 130), resume, sf::Color (0x00, 0x66, 0xff), sf::Color (0x00, 0x1f, 0x4d), sf::Color (0xcc, 0xe0, 0xff), font),
-		pauseMenu.addButton(sf::Vector2f(160, 40), sf::Vector2f(470, 200), options, sf::Color (0x00, 0x66, 0xff), sf::Color (0x00, 0x1f, 0x4d), sf::Color (0xcc, 0xe0, 0xff), font),
-		pauseMenu.addButton(sf::Vector2f(160, 40), sf::Vector2f(470, 270), quit, sf::Color (0x00, 0x66, 0xff), sf::Color (0x00, 0x1f, 0x4d), sf::Color (0xcc, 0xe0, 0xff), font),
+		pauseMenu.addButton(sf::Vector2f(96, 35), sf::Vector2f(guiPosition.x+2, guiPosition.y+10), resume, sf::Color (0x00, 0x66, 0xff), sf::Color (0x00, 0x1f, 0x4d), sf::Color (0xcc, 0xe0, 0xff), font),
+		pauseMenu.addButton(sf::Vector2f(96, 35), sf::Vector2f(guiPosition.x+2, guiPosition.y+55), options, sf::Color (0x00, 0x66, 0xff), sf::Color (0x00, 0x1f, 0x4d), sf::Color (0xcc, 0xe0, 0xff), font),
+		pauseMenu.addButton(sf::Vector2f(96, 35), sf::Vector2f(guiPosition.x+2, guiPosition.y+100), quit, sf::Color (0x00, 0x66, 0xff), sf::Color (0x00, 0x1f, 0x4d), sf::Color (0xcc, 0xe0, 0xff), font),
 	};
 	
 	gameWindow.setFramerateLimit(30);
@@ -78,7 +80,28 @@ void level1::level1Display(sf::RenderWindow &gameWindow, Bits bits)
 			{
 				if(event.key.code == sf::Keyboard::Escape)
 				{
-					if(!pauseMenu.visible) 
+					pauseMenu.show();
+					while(pauseMenu.visible)
+					{
+						guiPosition = sf::Vector2f(view.getCenter().x - 25, view.getCenter().y-25);
+						sf::Vector2f mousePosition = gameWindow.mapPixelToCoords(sf::Mouse::getPosition(gameWindow), view);
+						switch(pauseMenu.update(view.getCenter(), mousePosition))
+						{
+							case 1: pauseMenu.hide(); break;
+							case 3: gameWindow.close(); break;
+						}
+
+						gameWindow.clear();
+						gameWindow.draw(smap);
+						gameWindow.draw(*player);
+						gameWindow.draw(*enemy);
+						gameWindow.draw(*tree);
+						gameWindow.draw(pauseMenu);
+
+						gameWindow.display();
+					}
+
+					/*if(!pauseMenu.visible) 
 					{
 						std::cout << "Showing pause menu" << std::endl;
 						pauseMenu.show();
@@ -87,7 +110,7 @@ void level1::level1Display(sf::RenderWindow &gameWindow, Bits bits)
 					{
 						std::cout << "hiding pause menu" << std::endl;
 						pauseMenu.hide();
-					}
+					}*/
 				}
 			}
 		}
@@ -115,18 +138,14 @@ void level1::level1Display(sf::RenderWindow &gameWindow, Bits bits)
 		if(player->getPosition().y < view.getCenter().y-50)
 			view.move(0,-1);
 
-		if(pauseMenu.visible) 
-			pauseMenu.update();
 
-		gameWindow.draw(pauseMenu);
 		gameWindow.setView(view);
         gameWindow.clear();
 		gameWindow.draw(smap);
 		gameWindow.draw(*player);
 		gameWindow.draw(*enemy);
 		gameWindow.draw(*tree);
-		
-		
+		gameWindow.draw(pauseMenu);
 
 		gameWindow.display();
 	
