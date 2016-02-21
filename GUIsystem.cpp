@@ -15,7 +15,6 @@ int GUI::addButton(sf::Vector2f dimensions, sf::Vector2f position, const std::st
 {
 	buttons.push_back(Button(dimensions, position, text, buttonColor, borderColor, textColor, font)); 
 	buttonReference++;
-	std::cout << "button #" << buttonReference << " made." << std::endl;
 	return buttonReference;
 }
 int GUI::update(const sf::Vector2f viewPosition, sf::Vector2f &mousePosition)
