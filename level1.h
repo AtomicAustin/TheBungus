@@ -21,3 +21,4 @@ protected:
 	sf::Sprite smap;
 	bool menuIsOpen;
 };
+
