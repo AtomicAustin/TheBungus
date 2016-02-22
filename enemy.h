@@ -20,9 +20,6 @@ public:
 	
 
 private:
-	//virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
-
-	int sightDirection;
 	sf::Vector2f position;
 	sf::Vector2f velocity;
 	sf::RectangleShape sight;
