@@ -72,7 +72,6 @@ void Enemy::move(Player* player)
 
 	position.x += velocity.x;
 	position.y += velocity.y;
-	//setSight(sightDirection);
 	mSprite.setPosition(position);
 }
 std::string Enemy::kill()
@@ -101,9 +100,3 @@ sf::FloatRect Enemy::getBox()
 {
 	return mSprite.getGlobalBounds();
 }
-/*void Enemy::draw(sf::RenderTarget& target, sf::RenderStates states) const
-*{
-*	states.transform *= getTransform();
-*	target.draw(mSprite, states);
-*}
-*/
