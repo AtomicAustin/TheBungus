@@ -17,6 +17,7 @@ void level1::level1Display(sf::RenderWindow &gameWindow, Bits bits)
 
 	Enemy* enemy = new Enemy("png/enemy/portalmaster17x21.png", sf::Vector2i(17,21), sf::Vector2f(256,128));
 	
+	
 	Object* tree = new Object("png/level1/tree.png", sf::Vector2f(50,100));
 	player->addCollider(tree->getBox());
 
