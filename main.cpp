@@ -16,8 +16,8 @@ int main()
 {
 	const int WIDTH = GetSystemMetrics(SM_CXSCREEN) - 100;
 	const int HEIGHT = GetSystemMetrics(SM_CYSCREEN) - 100;
-	sf::RenderWindow window(sf::VideoMode(768, 768), "The Game");
-	window.setPosition(sf::Vector2i(0,0));
+	sf::RenderWindow* window = new sf::RenderWindow(sf::VideoMode(1300, 768), "The Game");
+	window->setPosition(sf::Vector2i(0,0));
 
 	sf::IntRect menu1(0,0,768,768);
 	sf::IntRect menu2(768,0,768,768);
@@ -30,18 +30,17 @@ int main()
 	sTexture.loadFromFile("png/menu/splashscreen768x768.png");
 	sSprite.setTexture(sTexture);
 	sSprite.setTextureRect(menu1);
-	sSprite.setPosition(0,0);
-	//sSprite.setPosition((WIDTH/2 - 768/2), 0);
+	sSprite.setPosition((1300/2 - 768/2), 0);
 
 	int choice = 0;
 
-	while(window.isOpen())
+	while(window->isOpen())
 	{
 		sf::Event sEvent;
-		while (window.pollEvent(sEvent))
+		while (window->pollEvent(sEvent))
         {
 			if(sEvent.type == sf::Event::Closed)
-				window.close();
+				window->close();
 
 			if(sEvent.type == sf::Event::KeyPressed)
 			{
@@ -67,9 +66,9 @@ int main()
 
 		sSprite.setTextureRect(selectArray[choice]);
 
-		window.clear();
-		window.draw(sSprite);
-		window.display();
+		window->clear();
+		window->draw(sSprite);
+		window->display();
 	}
 	
 	switch(choice)
@@ -77,24 +76,19 @@ int main()
 	case 0: 
 		{
 			level1* level = new level1();
-			level->level1Display(window, SaveLoad::load(false));
+			int errorCode = level->level1Display(window, SaveLoad::load(false));
 			delete level;
 			break;
 		}
 	case 1:
 		{
 			level1* level = new level1();
-			level->level1Display(window, SaveLoad::load(true));
+			int errorCode = level->level1Display(window, SaveLoad::load(true));
 			delete level;	
 			break;
 		}
-	case 2:{window.close();}
+	case 2:{window->close();}
 	}
-
-	//level1* level = new level1();
-
-	//level->level1Display(window);
-	//delete level;
 
     return 0;
 }
