@@ -20,6 +20,11 @@ void Animate::walking()
 	spriteRect.left = left[iterate];
 	mSprite.setTextureRect(spriteRect);
 }
+void Animate::stopped()
+{
+	spriteRect.left = left[0];
+	mSprite.setTextureRect(spriteRect);
+}
 //used for the special case when one direction is released but another is still pressed
 void Animate::releaseDirection(sf::Vector2f velocity)
 {
