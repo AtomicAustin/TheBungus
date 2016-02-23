@@ -21,38 +21,54 @@ Enemy::Enemy(const std::string& name, sf::Vector2i dimensions, sf::Vector2f mPos
 
 	position = mPosition;
 	setSight(3);
+
+	moving = NONE;
+	spotted = false;
 }
 void Enemy::path(Player* player, sf::Clock* clock)
 {
 	if(player->getBox().intersects(sight.getGlobalBounds()))
 	{
-		if((player->getPosition().x + 8) < position.x)
+		spotted = true;
+	}
+
+	if(!spotted)
+		return;
+	else
+	{
+		switch(findPlayer(player))
 		{
-			velocity.x = -1;
-			xDirection(-1);
-			setSight(2);
-		}
+		case 0: 
+			{
+				if((player->getPosition().x + 8) < position.x)
+				{
+					velocity.x = -.7;
+					moving = LEFT;
+				}
 		
-		if((player->getPosition().x + 8) > position.x)
-		{
-			velocity.x = 1;
-			xDirection(1);
-			setSight(4);
-		}
+				if((player->getPosition().x + 8) > position.x)
+				{
+					velocity.x = .7;
+					moving = RIGHT;
+				}
+				break;
+			}
+		case 1:
+			{
+				if(player->getPosition().y > position.y)
+				{
+					velocity.y = .7;
+					moving = DOWN;
+				}
 		
-		if(player->getPosition().y > position.y)
-		{
-			velocity.y = 1;
-			yDirection(1);
-			setSight(3);
+				if(player->getPosition().y < position.y)
+				{
+					velocity.y = -.7;
+					moving = UP;
+				}
+			}
 		}
-		
-		if(player->getPosition().y < position.y)
-		{
-			velocity.y = -1;
-			yDirection(-1);
-			setSight(1);
-		}
+
 		if(!player->getBox().intersects(mSprite.getGlobalBounds()))
 		{
 			if(clock->getElapsedTime().asSeconds() > 0.1f)
@@ -61,14 +77,28 @@ void Enemy::path(Player* player, sf::Clock* clock)
 					clock->restart();
 			}
 		}
+		else moving = NONE;
 	}
-	else
-		velocity = sf::Vector2f (0,0);
+}
+int Enemy::findPlayer(Player* player)
+{
+	if(abs(player->getBox().left - position.x) > abs(player->getBox().top - position.y))
+		return 0;
+	return 1;
 }
 void Enemy::move(Player* player)
 {
 	if(player->getBox().intersects(mSprite.getGlobalBounds()))
 		velocity = sf::Vector2f(0,0);
+
+	switch(moving)
+	{
+	case NONE: {stopped(); break;}
+	case UP: { yDirection(-1);setSight(1); break;}
+	case DOWN: { yDirection(1);setSight(3); break;}
+	case LEFT: { xDirection(-1);setSight(2); break;}
+	case RIGHT: { xDirection(1);setSight(4); break;}
+	}
 
 	position.x += velocity.x;
 	position.y += velocity.y;
