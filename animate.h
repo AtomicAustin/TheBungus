@@ -9,6 +9,7 @@ public:
 	Animate();
 	void setup(sf::Vector2i, int width, int height);
 	void walking();
+	void stopped();
 	void releaseDirection(sf::Vector2f);
 	void xDirection(int direction);
 	void yDirection(int direction);
