@@ -40,6 +40,7 @@ int level1::level1Display(sf::RenderWindow* window, Bits bits)
 				switch(pauseMenu->update(view->getCenter(), mousePosition))
 				{
 					case 1: pauseMenu->hide(); break;
+					//case 2: options menu
 					case 3: gameWindow->close(); break;
 				}
 
@@ -81,16 +82,22 @@ void level1::setUp()
 }
 void level1::updateWindow()
 {
-		gameWindow->setView(*view);
-		gameWindow->clear();
-		gameWindow->draw(smap);
-		gameWindow->draw(*player);
-		gameWindow->draw(*enemy);
-		gameWindow->draw(*tree);
-		if(pauseMenu->visible)
-			gameWindow->draw(*pauseMenu);
+	gameWindow->setView(*view);
+	gameWindow->clear();
+	gameWindow->draw(smap);
+	gameWindow->draw(*player);
 
-		gameWindow->display();
+	for(auto& i:objects)
+		gameWindow->draw(*i);
+	for(auto& i:enemies)
+		gameWindow->draw(*i);
+	for(auto& i:items)
+		gameWindow->draw(*i);
+
+	if(pauseMenu->visible)
+		gameWindow->draw(*pauseMenu);
+
+	gameWindow->display();
 }
 void level1::setBits(Bits &bits)
 {
@@ -100,13 +107,12 @@ void level1::setBits(Bits &bits)
 }
 void level1::populate()
 {
-	enemy = new Enemy("png/enemy/portalmaster17x21.png", sf::Vector2i(17,21), sf::Vector2f(256,128));
-	
-	tree = new Object("png/level1/tree.png", sf::Vector2f(50,100));
-	player->addCollider(tree->getBox());
-
-	player->addObject(enemy);
-	player->addObject(tree);
+	enemies.push_back(std::unique_ptr<Enemy>(new Enemy("png/enemy/portalmaster17x21.png", sf::Vector2i(17,21), sf::Vector2f(256,128))));
+	objects.push_back(std::unique_ptr<Object>(new Object("png/level1/tree.png", sf::Vector2f(50,100))));
+	for(auto& i: objects)
+	{
+		player->addCollider(i->getBox());
+	}
 }
 void level1::makePauseMenu()
 {
@@ -116,7 +122,7 @@ void level1::makePauseMenu()
 	std::string resume = "Resume";
 	std::string options = "Options";
 	std::string quit = "Quit";
-	std::string fontName = "00TT.ttf";
+	std::string fontName = "font/00TT.ttf";
 
 	sf::Font* font = new sf::Font;
 	if(!font->loadFromFile(fontName))
@@ -139,23 +145,36 @@ void level1::updateView()
 }
 void level1::update()
 {
-	enemy->move(player);
-	enemy->path(player, eClock);
+	for(auto& i: enemies)
+	{
+		i->move(player);
+		i->path(player, eClock);
+	}
 
 	if(actionCnt > 3)
 		{
 			player->deleteAction();
 			actionCnt = 0;
 		}
-		if(actionCnt > 0)
+	if(actionCnt > 0)
+	{
+		sf::FloatRect* playerAction = player->action(actionCnt);
+		enemies.erase(std::remove_if(enemies.begin(), enemies.end(), 
+			[&](std::unique_ptr<Enemy> const&e) -> bool
 		{
-			player->action(actionCnt);
-		}
+			if(playerAction->intersects(e.get()->getBox()))
+			{
+				e.get()->kill();
+				return true;
+			}
+			return false;
+		}));
+	}
 
-		player->move(pClock, actionCnt);
+	player->move(pClock, actionCnt);
 
-		updateView();
-		updateWindow();
+	updateView();
+	updateWindow();
 }
 level1::~level1()
 {
@@ -164,8 +183,6 @@ level1::~level1()
 	delete pClock;
 	delete eClock;
 	delete player;
-	delete enemy;
-	delete tree;
 	delete pauseMenu;
 	delete[] pause;
 }
