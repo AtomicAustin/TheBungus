@@ -75,7 +75,7 @@ void Player::keyReleased(sf::Event event)
 	}
 	moving = false;
 }
-void Player::action(int& actionCount)
+sf::FloatRect* Player::action(int& actionCount)
 {
 	if(actionCount == 1)
 	{
@@ -87,25 +87,8 @@ void Player::action(int& actionCount)
 	}	
 	
 	updateAction(movingDirection);
-	
-	if(hit && actionCount == 3)
-	{
-		hit = false;
-		std::cout<< "Player hit: " << wasHit->kill() << std::endl;
-		wasHit = NULL;
-	}
 
-	if(actionCount == 1)
-	{
-		for(size_t i = 0; i < objects.size(); i++)
-		{
-			if(actionRect.getGlobalBounds().intersects(objects[i]->getBox()))
-			{	
-				wasHit = objects[i];
-				hit = true;
-			}
-		}
-	}
+	return new sf::FloatRect(actionRect.getGlobalBounds());
 }
 void Player::updateAction(int direction)
 {
@@ -172,10 +155,6 @@ void Player::move(sf::Clock* clock, int& actionCount)
 void Player::addCollider(sf::FloatRect box)
 {
 	colliders.push_back(box);
-}
-void Player::addObject(Object* obj)
-{
-	objects.push_back(obj);
 }
 sf::FloatRect Player::getBox()
 {
