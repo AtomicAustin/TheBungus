@@ -17,11 +17,11 @@ public:
 	void moveLeft();
 	void moveRight();
 	void keyReleased(sf::Event);
-	void action(int& actionCount);
+	sf::FloatRect* action(int& actionCount);
 	void updateAction(int direction);
 	void deleteAction();
 	void addCollider(sf::FloatRect);
-	void addObject(Object*);
+	void addObject(Object);
 	void move(sf::Clock*,int& actionCount);
 	sf::FloatRect getBox();
 	sf::Vector2f getPosition();
@@ -34,7 +34,6 @@ private:
 	sf::Vector2f velocity;
 	sf::Vector2f position;
 	std::vector<sf::FloatRect> colliders;
-	std::vector<Object*> objects;
 	bool moving, swinging;
 	sf::FloatRect movementRect;
 	sf::RectangleShape actionRect;
