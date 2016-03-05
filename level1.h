@@ -7,7 +7,7 @@
 #include "object.h"
 #include "bits.cpp"
 #include "GUIsystem.h"
-#include "toucher.h"
+#include "items.h"
 
 class level1
 {
