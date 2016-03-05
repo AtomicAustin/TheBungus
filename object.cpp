@@ -7,10 +7,7 @@ Object::Object(const std::string& name, sf::Vector2f position)
 	mTexture.loadFromFile(name);
 	mSprite.setTexture(mTexture);
 	mSprite.setPosition(position);
-}
-std::string Object::kill()
-{
-	return "Object";
+	this->position = position;
 }
 sf::FloatRect Object::getBox()
 {
