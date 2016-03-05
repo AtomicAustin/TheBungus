@@ -104,9 +104,9 @@ void Enemy::move(Player* player)
 	position.y += velocity.y;
 	mSprite.setPosition(position);
 }
-std::string Enemy::kill()
+void Enemy::kill()
 {
-	return "Enemy";
+	this->~Enemy();
 }
 void Enemy::setSight(int direction)
 {
@@ -125,8 +125,4 @@ void Enemy::setSight(int direction)
 sf::RectangleShape Enemy::getSight()
 {
 	return sight;
-}
-sf::FloatRect Enemy::getBox()
-{
-	return mSprite.getGlobalBounds();
 }
