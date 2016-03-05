@@ -1,4 +1,5 @@
 #include <SFML\Graphics.hpp>
+#include <memory>
 #include <iostream>
 #include "animate.h"
 #include "player.h"
@@ -6,6 +7,7 @@
 #include "object.h"
 #include "bits.cpp"
 #include "GUIsystem.h"
+#include "toucher.h"
 
 class level1
 {
@@ -40,8 +42,9 @@ protected:
 	*/
 
 	//Pointers instantiated in populate
-	Enemy* enemy;
-	Object* tree;
+	std::vector<std::unique_ptr<Object>> objects;
+	std::vector<std::unique_ptr<Enemy>> enemies;
+	std::vector<std::unique_ptr<Item>> items;
 
 	//stuff for the pause menu
 	GUI *pauseMenu;
