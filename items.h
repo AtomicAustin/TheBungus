@@ -3,7 +3,7 @@
 #include <SFML/Graphics.hpp>
 #include "player.h"
 
-class Item: public Object
+class Item: public Object, public Object_Animate
 {
 public:
 	Item();
@@ -13,8 +13,8 @@ public:
 private:
 	int tag;
 };
-/*class ItemManager
+class ItemManager
 {
 public:
 
-};*/
+};
