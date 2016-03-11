@@ -145,17 +145,22 @@ void level1::updateView()
 }
 void level1::update()
 {
+	sf::FloatRect* playerMovementBox = player->getBox();
 	for(auto& i: enemies)
 	{
-		i->move(player);
-		i->path(player, eClock);
+		i->move(playerMovementBox);
+		i->path(playerMovementBox, eClock);
 	}
 
+	delete playerMovementBox;
+	playerMovementBox = NULL;
+
 	if(actionCnt > 3)
-		{
-			player->deleteAction();
-			actionCnt = 0;
-		}
+	{
+		player->deleteAction();
+		actionCnt = 0;
+	}
+
 	if(actionCnt > 0)
 	{
 		sf::FloatRect* playerAction = player->action(actionCnt);
@@ -169,6 +174,8 @@ void level1::update()
 			}
 			return false;
 		}));
+		delete playerAction;
+		playerAction = NULL;
 	}
 
 	player->move(pClock, actionCnt);
@@ -183,6 +190,8 @@ level1::~level1()
 	delete pClock;
 	delete eClock;
 	delete player;
+	enemies.clear();
+	objects.clear();
 	delete pauseMenu;
 	delete[] pause;
 }
