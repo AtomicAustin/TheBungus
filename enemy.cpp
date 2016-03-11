@@ -25,9 +25,9 @@ Enemy::Enemy(const std::string& name, sf::Vector2i dimensions, sf::Vector2f mPos
 	moving = NONE;
 	spotted = false;
 }
-void Enemy::path(Player* player, sf::Clock* clock)
+void Enemy::path(sf::FloatRect* pMoveBox, sf::Clock* clock)
 {
-	if(player->getBox().intersects(sight.getGlobalBounds()))
+	if(pMoveBox->intersects(sight.getGlobalBounds()))
 	{
 		spotted = true;
 	}
@@ -36,17 +36,17 @@ void Enemy::path(Player* player, sf::Clock* clock)
 		return;
 	else
 	{
-		switch(findPlayer(player))
+		switch(findPlayer(pMoveBox))
 		{
 		case 0: 
 			{
-				if((player->getPosition().x + 8) < position.x)
+				if((pMoveBox->left) < position.x)
 				{
 					velocity.x = -.7;
 					moving = LEFT;
 				}
 		
-				if((player->getPosition().x + 8) > position.x)
+				if((pMoveBox->left) > position.x)
 				{
 					velocity.x = .7;
 					moving = RIGHT;
@@ -55,13 +55,13 @@ void Enemy::path(Player* player, sf::Clock* clock)
 			}
 		case 1:
 			{
-				if(player->getPosition().y > position.y)
+				if(pMoveBox->top > position.y)
 				{
 					velocity.y = .7;
 					moving = DOWN;
 				}
 		
-				if(player->getPosition().y < position.y)
+				if(pMoveBox->top < position.y)
 				{
 					velocity.y = -.7;
 					moving = UP;
@@ -69,31 +69,31 @@ void Enemy::path(Player* player, sf::Clock* clock)
 			}
 		}
 
-		if(!player->getBox().intersects(mSprite.getGlobalBounds()))
+		if(!pMoveBox->intersects(mSprite.getGlobalBounds()))
 		{
 			if(clock->getElapsedTime().asSeconds() > 0.1f)
 			{		
-					walking();
-					clock->restart();
+				animate();
+				clock->restart();
 			}
 		}
 		else moving = NONE;
 	}
 }
-int Enemy::findPlayer(Player* player)
+int Enemy::findPlayer(sf::FloatRect* pMoveBox)
 {
-	if(abs(player->getBox().left - position.x) > abs(player->getBox().top - position.y))
+	if(abs(pMoveBox->left - position.x) > abs(pMoveBox->top - position.y))
 		return 0;
 	return 1;
 }
-void Enemy::move(Player* player)
+void Enemy::move(sf::FloatRect* pMoveBox)
 {
-	if(player->getBox().intersects(mSprite.getGlobalBounds()))
+	if(pMoveBox->intersects(mSprite.getGlobalBounds()))
 		velocity = sf::Vector2f(0,0);
 
 	switch(moving)
 	{
-	case NONE: {stopped(); break;}
+	case NONE: {reset(); break;}
 	case UP: { yDirection(-1);setSight(1); break;}
 	case DOWN: { yDirection(1);setSight(3); break;}
 	case LEFT: { xDirection(-1);setSight(2); break;}
@@ -106,7 +106,7 @@ void Enemy::move(Player* player)
 }
 void Enemy::kill()
 {
-	this->~Enemy();
+	//run death animation
 }
 void Enemy::setSight(int direction)
 {
