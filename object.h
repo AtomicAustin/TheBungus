@@ -3,7 +3,7 @@
 #include <SFML/Graphics.hpp>
 #include "animate.h"
 
-class Object: public sf::Sprite, public sf::Texture, public Animate
+class Object: public sf::Sprite, public sf::Texture, public Object_Animate
 {
 public:
 	Object();
