@@ -1,32 +1,37 @@
 #include "animate.h"
 
-Animate::Animate()
+Object_Animate::Object_Animate()
 {}
-void Animate::setup(sf::Vector2i dimensions, int width, int height)
+void Object_Animate::setup(sf::Vector2i dimensions, int width, int height)
 {
 	for(int i = 0; i < width; i++)
-		left[i] = dimensions.x * i;
+		left.push_back(dimensions.x * i);
 	for(int j = 0; j < height; j++)
-		top[j] = dimensions.y * j;
+		top.push_back(dimensions.y * j);
 	iterate = 0;
 	offset = 0;
 }
-void Animate::walking()
+void Object_Animate::animate()
 {
-	if (iterate == 3 + offset)
+	if(iterate == 3 + offset)
 		iterate = offset;
 	else
 		iterate++;
+
 	spriteRect.left = left[iterate];
 	mSprite.setTextureRect(spriteRect);
 }
-void Animate::stopped()
+void Object_Animate::reset()
 {
 	spriteRect.left = left[0];
 	mSprite.setTextureRect(spriteRect);
 }
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+Moveable_Animate::Moveable_Animate()
+{}
 //used for the special case when one direction is released but another is still pressed
-void Animate::releaseDirection(sf::Vector2f velocity)
+void Moveable_Animate::releaseDirection(sf::Vector2f velocity)
 {
 	if(velocity == sf::Vector2f (0,-1))
 		spriteRect.top = top[1];
@@ -39,7 +44,7 @@ void Animate::releaseDirection(sf::Vector2f velocity)
 
 	mSprite.setTextureRect(spriteRect);
 }
-void Animate::xDirection(int direction)
+void Moveable_Animate::xDirection(int direction)
 {
 	if(direction == 1)
 		spriteRect.top = top[3];
@@ -47,7 +52,7 @@ void Animate::xDirection(int direction)
 		spriteRect.top = top[2];
 	mSprite.setTextureRect(spriteRect);
 }
-void Animate::yDirection(int direction)
+void Moveable_Animate::yDirection(int direction)
 {
 	if(direction == 1)
 		spriteRect.top = top[0];
@@ -55,7 +60,7 @@ void Animate::yDirection(int direction)
 		spriteRect.top = top[1];
 	mSprite.setTextureRect(spriteRect);
 }
-void Animate::setOffSet(int action)
+void Moveable_Animate::setOffSet(int action)
 {
 	//walking
 	if(action==0)
