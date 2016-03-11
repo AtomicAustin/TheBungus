@@ -5,14 +5,14 @@
 #include "player.h"
 #include <cmath>
 
-class Enemy: public Object
+class Enemy: public Moveable_Animate
 {
 public:
 	Enemy();
 	Enemy(const std::string &name, sf::Vector2i dimensions, sf::Vector2f mPosition);
-	void path(Player* player, sf::Clock* clock);
-	int findPlayer(Player* player);
-	void move(Player* player);
+	void path(sf::FloatRect* pMoveBox, sf::Clock* clock);
+	int findPlayer(sf::FloatRect* pMoveBox);
+	void move(sf::FloatRect* pMoveBox);
 	void kill();
 	void setSight(int sightDirection);
 	void setEnPosition(sf::Vector2f position);
