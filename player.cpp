@@ -119,7 +119,7 @@ void Player::move(sf::Clock* clock, int& actionCount)
 	{
 		if(clock->getElapsedTime().asSeconds() > 0.1f)
 		{
-			walking();
+			animate();
 			clock->restart();
 			if(swinging)
 					actionCount++;
@@ -156,9 +156,9 @@ void Player::addCollider(sf::FloatRect box)
 {
 	colliders.push_back(box);
 }
-sf::FloatRect Player::getBox()
+sf::FloatRect* Player::getBox()
 {
-	return movementRect;
+	return new sf::FloatRect(movementRect);
 }
 sf::Vector2f Player::getPosition()
 {
