@@ -7,7 +7,7 @@
 #include "object.h"
 
 // What the user controls, this does all sort of things
-class Player : public sf::Drawable, public sf::Transformable, public Animate
+class Player : public sf::Drawable, public sf::Transformable, public Moveable_Animate
 {
 public:
 	Player();
@@ -23,7 +23,7 @@ public:
 	void addCollider(sf::FloatRect);
 	void addObject(Object);
 	void move(sf::Clock*,int& actionCount);
-	sf::FloatRect getBox();
+	sf::FloatRect* getBox();
 	sf::Vector2f getPosition();
 
 private:
