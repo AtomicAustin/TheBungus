@@ -164,7 +164,16 @@ void level1::update()
 	if(actionCnt > 0)
 	{
 		sf::FloatRect* playerAction = player->action(actionCnt);
-		enemies.erase(std::remove_if(enemies.begin(), enemies.end(), 
+
+		for(auto&i : enemies){
+			if(playerAction->intersects(i->getBox())){
+				i->kill();
+				enemies.erase(std::remove(enemies.begin(), enemies.end(), i));
+			}
+		}
+
+
+		/*enemies.erase(std::remove_if(enemies.begin(), enemies.end(), 
 			[&](std::unique_ptr<Enemy> const&e) -> bool
 		{
 			if(playerAction->intersects(e.get()->getBox()))
@@ -173,7 +182,7 @@ void level1::update()
 				return true;
 			}
 			return false;
-		}));
+		}));*/
 		delete playerAction;
 		playerAction = NULL;
 	}
