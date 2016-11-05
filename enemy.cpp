@@ -73,7 +73,7 @@ void Enemy::path(sf::FloatRect* pMoveBox, sf::Clock* clock)
 		{
 			if(clock->getElapsedTime().asSeconds() > 0.1f)
 			{		
-				animate();
+				walking();
 				clock->restart();
 			}
 		}
@@ -122,7 +122,16 @@ void Enemy::setSight(int direction)
 		case 4:{ sight.setPosition(position.x, position.y-15); sight.setSize(sf::Vector2f(100,62)); break;}
 		}
 }
+sf::FloatRect Enemy::getBox()
+{
+	return mSprite.getGlobalBounds();
+}
 sf::RectangleShape Enemy::getSight()
 {
 	return sight;
+}
+void Enemy::draw(sf::RenderTarget& target, sf::RenderStates states) const
+{
+	states.transform *= getTransform();
+	target.draw(mSprite, states);
 }
