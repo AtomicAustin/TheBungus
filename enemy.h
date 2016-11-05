@@ -5,7 +5,7 @@
 #include "player.h"
 #include <cmath>
 
-class Enemy: public Moveable_Animate
+class Enemy: public Animate, public sf::Transformable, public sf::Drawable
 {
 public:
 	Enemy();
@@ -16,9 +16,12 @@ public:
 	void kill();
 	void setSight(int sightDirection);
 	void setEnPosition(sf::Vector2f position);
+	sf::FloatRect getBox();
 	sf::RectangleShape getSight();
+	virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
 
 private:
+	sf::Vector2f position;
 	enum movement{UP, DOWN, LEFT, RIGHT, NONE};
 	movement moving;
 	sf::Vector2f velocity;
