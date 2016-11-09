@@ -1,0 +1,35 @@
+[Base]
+GameObjects-
++animator
++collision
++movement
+
+	[Derived]
+	Player-
+	+input
+	+inventory
+	+hitbox
+	+death
+
+	Enemy-
+	+hitbox
+	+inventory
+	+death
+
+	Item-
+	+tag
+	+tooltip
+
+	StoryNPC-
+	+textbox
+
+	TradeNPC-
+	+inventory
+
+	CraftNPC-
+	+craft
+
+Button-
++animator
++collision
++input
